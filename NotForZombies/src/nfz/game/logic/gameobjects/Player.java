@@ -42,7 +42,7 @@ public class Player extends GameObject{
 		stats.setStrength(5);
 		stats.setAgility(5);
 		stats.setIntelligence(5);
-		stats.setSpeed(1);
+		stats.setSpeed(4f);
 	}
 	
 	/**
