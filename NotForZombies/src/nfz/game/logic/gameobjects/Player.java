@@ -11,6 +11,7 @@ import org.lwjgl.util.vector.Vector2f;
 
 import nfz.game.graphics.Sprite;
 import nfz.game.logic.GameObject;
+import nfz.game.logic.Stats;
 
 public class Player extends GameObject{
 	
@@ -18,9 +19,9 @@ public class Player extends GameObject{
 	public static final float PLAYER_SY = 64;
 	public static final String PLAYER_TEX_LOC = "res/player.png";
 	
-	private int hp;
-	
+	private Stats stats = new Stats();
 	private float xp;
+	private int xpNeeded;
 	
 	/**
 	 * create player instance on coords x.y
@@ -30,8 +31,18 @@ public class Player extends GameObject{
 	public Player (float x, float y) {
 		super(x, y, 0.1f, 1f, 0.5f, PLAYER_SX, PLAYER_SY);
 		sprite = new Sprite(0.5f, 0.2f, 0.3f, PLAYER_SX, PLAYER_SY, PLAYER_TEX_LOC);
-		xp = 151;
-		hp = 10;
+		xp=0;
+		xpNeeded=50;
+		stats.setCurrHealth(100);
+		stats.setMaxHealth(100);
+		stats.setCurrEnergy(100);
+		stats.setMaxEnergy(100);
+		stats.setArmor(0);
+		stats.setLevel(1);
+		stats.setStrength(5);
+		stats.setAgility(5);
+		stats.setIntelligence(5);
+		stats.setSpeed(1);
 	}
 	
 	/**
@@ -109,51 +120,24 @@ public class Player extends GameObject{
 	private void move(float magX, float magY) {
 		//x += getSpeed() * Math.cos(Math.toRadians(rot));
 		//y += getSpeed() * Math.sin(Math.toRadians(rot));
-		x += getSpeed() * magX;
-		y += getSpeed() * magY;
+		x += stats.getSpeed() * magX;
+		y += stats.getSpeed() * magY;
 	}
 	
 	public void addXP(float amt) {
-		xp += amt;
-	}
-	
-	/**
-	 * Calculates max hp of player
-	 * @return
-	 */
-	public int getMaxHealth() {
-		//to do : proper calculation
-		return getLevel() * 10;
-	}
-	/*
-	 * return current hp
-	 */
-	public int getCurrentHealth() {
-		int max = getMaxHealth();
-		if (hp > max) {
-			hp = max;
+		this.xp += amt;
+		if(xp>=xpNeeded){
+			levelUP();
+			xp-=xpNeeded;
 		}
-		return hp;
 	}
 	
-	/**
-	 * return str of player
-	 * @return
-	 */
-	public float getStrength() {
-		return getLevel() * 4f;
+	private void levelUP() {
+		stats.setLevel(stats.getLevel()+1);
+		xpNeeded *= 2; 
 	}
-	
-	/**
-	 * calculates speed
-	 * @return
-	 */
-	public float getSpeed() {
-		return 4f;
+
+	public float getXp() {
+		return xp;
 	}
-	
-	public int getLevel() {
-		return (int)(xp / 50) + 1;
-	}
-	
 }
