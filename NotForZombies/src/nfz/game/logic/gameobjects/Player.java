@@ -92,18 +92,33 @@ public class Player extends GameObject{
 	}
 	
 	public void getInput() {
+		//get mouse coords
+		float mouseX = Mouse.getX();
+		float mouseY = Mouse.getY();
+			
+		//get player center coords
+		float centerX = x + sprite.getSx() / 2;
+		float centerY = y + sprite.getSy() / 2;
+				
+		//get delta values
+		float deltaY = mouseY - centerY;
+		float deltaX = mouseX - centerX;
+		
+		//calculate angle between player and mouse using arc tang
+		float angle = (float) Math.atan2(deltaY, deltaX);
+		
 		//check for keys pressed
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			move(0, 1);
+			move(angle);
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			move(0, -1);
+			move((float) (angle+Math.toRadians(180)));
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			move(-1, 0);
+			move((float) (angle+Math.toRadians(90)));
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			move(1, 0);
+			move((float) (angle-Math.toRadians(90)));
 		}
 	}
 	
@@ -117,11 +132,11 @@ public class Player extends GameObject{
 		glPopMatrix();
 	}
 	
-	private void move(float magX, float magY) {
-		//x += getSpeed() * Math.cos(Math.toRadians(rot));
-		//y += getSpeed() * Math.sin(Math.toRadians(rot));
-		x += stats.getSpeed() * magX;
-		y += stats.getSpeed() * magY;
+	private void move(float angle) {
+		x += stats.getSpeed() * Math.cos(angle);
+		y += stats.getSpeed() * Math.sin(angle);
+		//x += stats.getSpeed() * magX;
+		//y += stats.getSpeed() * magY;
 	}
 	
 	public void addXP(float amt) {
