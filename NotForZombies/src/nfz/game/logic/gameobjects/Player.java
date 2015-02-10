@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 
 import nfz.game.graphics.Sprite;
@@ -22,6 +23,7 @@ public class Player extends GameObject{
 	private Stats stats = new Stats();
 	private float xp;
 	private int xpNeeded;
+	private int delta;
 	
 	/**
 	 * create player instance on coords x.y
@@ -42,14 +44,18 @@ public class Player extends GameObject{
 		stats.setStrength(5);
 		stats.setAgility(5);
 		stats.setIntelligence(5);
-		stats.setSpeed(4f);
+		stats.setSpeed(0.4f);
 	}
 	
 	/**
 	 * Apply player logic
 	 */
-	public void update() {
-		rotateToMouseLocation();	
+	public void update(int delta) {
+		this.delta = delta;
+		getInput();
+		rotateToMouseLocation();
+		
+		System.out.println("Player\tX:" + x + " Y:" + y + " ROT: " + rot);
 	}
 	
 	public void rotateToMouseLocation() {
@@ -59,8 +65,8 @@ public class Player extends GameObject{
 		float mouseY = Mouse.getY();
 			
 		//get player center coords
-		float centerX = x + sprite.getSx() / 2;
-		float centerY = y + sprite.getSy() / 2;
+		float centerX = Display.getWidth() / 2;
+		float centerY = Display.getHeight() / 2;
 				
 		//get delta values
 		float deltaY = mouseY - centerY;
@@ -70,35 +76,28 @@ public class Player extends GameObject{
 		float angle = (float) Math.atan(deltaY / deltaX);
 		
 		//get quadrant I, II, III, or IV
-		int quadr = 0;
 		if (deltaY >= 0 && deltaX >= 0) {
-			quadr = 1;
 			rot = (float) Math.toDegrees(angle);
 		} else if (deltaY >= 0 && deltaX < 0) {
-			quadr = 2;
 			rot = 180 + (float) Math.toDegrees(angle);
 		} else if (deltaY < 0 && deltaX < 0) {
-			quadr = 3;
 			rot = 180 + (float) Math.toDegrees(angle);
 		} else if (deltaY < 0 && deltaX >= 0) {
-			quadr = 4;
 			rot = 360 + (float) Math.toDegrees(angle);
 		}
 		
 		rot -= 90;
-		
-		System.out.println("Rotation: " + rot + ", DX: " + deltaX + ", DY: " + deltaY + 
-				", QUADRANT: " + quadr);	
 	}
 	
 	public void getInput() {
+		
 		//get mouse coords
 		float mouseX = Mouse.getX();
 		float mouseY = Mouse.getY();
 			
 		//get player center coords
-		float centerX = x + sprite.getSx() / 2;
-		float centerY = y + sprite.getSy() / 2;
+		float centerX = Display.getWidth() / 2;
+		float centerY = Display.getHeight() / 2;
 				
 		//get delta values
 		float deltaY = mouseY - centerY;
@@ -122,9 +121,15 @@ public class Player extends GameObject{
 		}
 	}
 	
+	/**
+	 * Renders player in the center of the screen
+	 */
 	public void render() {
 		glPushMatrix();
-		glTranslatef(x, y, 0);
+		//translate to the center of the screen
+		glTranslatef(Display.getWidth() / 2 - Player.PLAYER_SX / 2, 
+				Display.getHeight() / 2 - Player.PLAYER_SY / 2, 0);
+		//translate to the center of player to apply rotation
 		glTranslatef(sprite.getSx() / 2, sprite.getSy() / 2, 0);
 		glRotatef(rot, 0.0f, 0.0f, 1.0f);	
 		glTranslatef(-(sprite.getSx() / 2), -(sprite.getSy() / 2), 0);
@@ -133,8 +138,8 @@ public class Player extends GameObject{
 	}
 	
 	private void move(float angle) {
-		x += stats.getSpeed() * Math.cos(angle);
-		y += stats.getSpeed() * Math.sin(angle);
+		x += stats.getSpeed() * Math.cos(angle) * delta;
+		y += stats.getSpeed() * Math.sin(angle) * delta;
 		//x += stats.getSpeed() * magX;
 		//y += stats.getSpeed() * magY;
 	}

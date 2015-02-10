@@ -22,6 +22,7 @@ public class Main {
 	private static final int SCREEN_HEIGHT = 600;
 	
 	private static Game game;
+	private Time time;
 	
 	/**
 	 * Get the engine up and running
@@ -77,9 +78,14 @@ public class Main {
 	 * starts the game loop then collects input, updates and renders game
 	 */
 	public void gameLoop() {
+		time = new Time();
+		time.getDelta(); //call once before loop to init lastFrame
+		time.lastFPS = time.getTime(); // call before loop to init fps timer
+		
 		while(!Display.isCloseRequested()) {
 			getInput();
 			update();
+			time.updateFPS();
 			render();
 		}
 	}
@@ -89,7 +95,7 @@ public class Main {
 	}
 	
 	private void update() {
-		game.update();
+		game.update(time.getDelta());
 	}
 	
 	/**

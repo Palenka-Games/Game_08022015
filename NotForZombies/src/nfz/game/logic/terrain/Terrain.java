@@ -4,6 +4,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.Random;
 
+import nfz.game.engine.Game;
+
 /**
  * Represents the world/level stored in 2d grid
  * @author BBPG
@@ -16,6 +18,9 @@ public class Terrain {
 	private int ySize;
 	//2d array of blocks
 	private Block[][] blocks;
+	
+	private float translateX;
+	private float translateY;
 	
 	public Terrain(int xSize, int ySize) {
 		this.xSize = xSize;
@@ -43,16 +48,27 @@ public class Terrain {
 	 * Render all blocks in terrain
 	 */
 	public void render() {
+		//translate rendering based on player position
+		glTranslatef(-translateX, -translateY, 0);
 		for (int i = 0; i < ySize; i++) {
 			for (int j = 0; j < xSize; j++) {
-				glPushMatrix();
+					glPushMatrix();
 					//translate to the position of the rendered block
 					//and call render method on that block
 					glTranslatef(j * Block.BLOCK_SIZE, i * Block.BLOCK_SIZE, 0);
 					blocks[i][j].render();
-				glPopMatrix();	
+					glPopMatrix();
 			}
 		}
+		//translate back
+		glTranslatef(translateX, translateY, 0);
+	}
+	
+	public void setTranslateX(float x) {
+		this.translateX = x;
+	}
+	public void setTranslateY(float y) {
+		this.translateY = y;
 	}
 	
 }

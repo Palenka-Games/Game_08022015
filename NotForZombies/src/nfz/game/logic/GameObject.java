@@ -25,7 +25,7 @@ public abstract class GameObject {
 	}
 	
 	
-	public void update() {
+	public void update(int delta) {
 		
 	}
 	

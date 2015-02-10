@@ -20,24 +20,31 @@ public class Game {
 	private Player player;
 	private Terrain terrain;
 	
-	public Game() {
+	private float startX = Display.getWidth() / 2;
+	private float startY = Display.getHeight() / 2;
+	
+	public Game() {		
 		objects = new ArrayList<GameObject>();
 		
-		terrain = new Terrain(10, 10);
+		terrain = new Terrain(20, 20);
 		
-		player = new Player(0, 0);
+		//create player at starting position
+		player = new Player(startX, startY);
 		
 		objects.add(player);
 	}
 	
 	public void getInput() {
-		player.getInput();
+		//player.getInput();
 	}
 	
-	public void update() {
+	public void update(int delta) {
 		for (GameObject go : objects) {
-			go.update();
+			go.update(delta);
 		}
+		//update translation based on player position
+		terrain.setTranslateX(player.getX());
+		terrain.setTranslateY(player.getY());
 	}
 	
 	public void render() {
