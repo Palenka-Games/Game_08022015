@@ -164,8 +164,13 @@ public class Player extends GameObject{
 	}
 	
 	private void move(float angle) {
-		float newX = (float) (x + stats.getSpeed() * Math.cos(angle) * delta);
-		float newY = (float) (y + stats.getSpeed() * Math.sin(angle) * delta);
+		float speed = stats.getSpeed();
+		//diagonal movement
+		if( (Keyboard.isKeyDown(Keyboard.KEY_W) && ( Keyboard.isKeyDown(Keyboard.KEY_A) || Keyboard.isKeyDown(Keyboard.KEY_D))) ||
+		    (Keyboard.isKeyDown(Keyboard.KEY_S) && ( Keyboard.isKeyDown(Keyboard.KEY_A) || Keyboard.isKeyDown(Keyboard.KEY_D))))
+					speed = (float) (speed / Math.sqrt(2));
+		float newX = (float) (x + speed * Math.cos(angle) * delta);
+		float newY = (float) (y + speed * Math.sin(angle) * delta);
 		Rectangle newHitbox = new Rectangle((int) (newX - PLAYER_SX / 2), (int) (newY - PLAYER_SY / 2),
 				(int)PLAYER_SX, (int)PLAYER_SY);
 		//check collisions
