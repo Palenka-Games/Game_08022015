@@ -22,4 +22,14 @@ public class Physics {
 		return r1.intersects(r2);
 	}
 	
+	/**
+	 * Check if two rectangles collide
+	 * @param r1
+	 * @param r2
+	 * @return
+	 */
+	public static boolean checkCollision(Rectangle r1, Rectangle r2) {
+		return r1.intersects(r2);
+	}
+	
 }

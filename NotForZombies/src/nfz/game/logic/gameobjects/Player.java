@@ -5,14 +5,18 @@ import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 
+import java.awt.Rectangle;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 
+import nfz.game.engine.Game;
 import nfz.game.graphics.Sprite;
 import nfz.game.logic.GameObject;
 import nfz.game.logic.Stats;
+import nfz.game.physics.Physics;
 
 public class Player extends GameObject{
 	
@@ -31,8 +35,11 @@ public class Player extends GameObject{
 	 * @param y
 	 */
 	public Player (float x, float y) {
-		super(x, y, 0.1f, 1f, 0.5f, PLAYER_SX, PLAYER_SY);
-		sprite = new Sprite(0.5f, 0.2f, 0.3f, PLAYER_SX, PLAYER_SY, PLAYER_TEX_LOC);
+		super(x, y, PLAYER_SX, PLAYER_SY);
+		isSolid = true;
+		sprite = new Sprite(PLAYER_SX, PLAYER_SY, PLAYER_TEX_LOC);
+		hitbox = new Rectangle((int) (x - PLAYER_SX / 2), (int) (y - PLAYER_SY / 2), 
+				(int)PLAYER_SX, (int)PLAYER_SY);
 		xp=0;
 		xpNeeded=50;
 		stats.setCurrHealth(100);
@@ -51,11 +58,30 @@ public class Player extends GameObject{
 	 * Apply player logic
 	 */
 	public void update(int delta) {
+		//check collisions
 		this.delta = delta;
 		getInput();
 		rotateToMouseLocation();
 		
 		System.out.println("Player\tX:" + x + " Y:" + y + " ROT: " + rot);
+	}
+	
+
+	@Override
+	public void collideWith(GameObject other) {
+		
+		if (other instanceof Obstacle) {
+			System.out.println("Collision with obstacle!");
+		}
+		
+	}
+	
+	/**
+	 * Update hitbox positions based on position
+	 */
+	private void updateHitbox() {
+		hitbox.setBounds((int) (x - PLAYER_SX / 2), (int) (y - PLAYER_SY / 2), 
+				(int)PLAYER_SX, (int)PLAYER_SY);
 	}
 	
 	public void rotateToMouseLocation() {
@@ -138,10 +164,30 @@ public class Player extends GameObject{
 	}
 	
 	private void move(float angle) {
-		x += stats.getSpeed() * Math.cos(angle) * delta;
-		y += stats.getSpeed() * Math.sin(angle) * delta;
-		//x += stats.getSpeed() * magX;
-		//y += stats.getSpeed() * magY;
+		float newX = (float) (x + stats.getSpeed() * Math.cos(angle) * delta);
+		float newY = (float) (y + stats.getSpeed() * Math.sin(angle) * delta);
+		Rectangle newHitbox = new Rectangle((int) (newX - PLAYER_SX / 2), (int) (newY - PLAYER_SY / 2),
+				(int)PLAYER_SX, (int)PLAYER_SY);
+		//check collisions
+		boolean collide = false;
+		for (GameObject go : Game.objects) {
+			if (!(go instanceof Player)) {
+				//compare hitboxes
+				if (Physics.checkCollision(newHitbox, go.getHitbox())) {
+					System.out.println("r1 " + newHitbox + "\nr2 " + go.getHitbox());
+					collide = true;
+					go.collideWith(this);
+					this.collideWith(go);
+				}
+			}
+		}
+		//move if collision not detected
+		if (!collide) {
+			x = newX;
+			y = newY;
+		}
+		
+		
 	}
 	
 	public void addXP(float amt) {
@@ -160,4 +206,5 @@ public class Player extends GameObject{
 	public float getXp() {
 		return xp;
 	}
+
 }

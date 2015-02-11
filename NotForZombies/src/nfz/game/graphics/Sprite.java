@@ -10,15 +10,11 @@ import org.newdawn.slick.util.ResourceLoader;
 
 public class Sprite {
 
-	private float r,g,b;
 	private float sx;
 	private float sy;
 	private Texture texture;
 	
-	public Sprite(float r, float g, float b, float sx, float sy, String texPath) {
-		this.r = r;
-		this.g = g;
-		this.b = b;
+	public Sprite(float sx, float sy, String texPath) {
 		this.sx = sx;
 		this.sy = sy;
 		try {

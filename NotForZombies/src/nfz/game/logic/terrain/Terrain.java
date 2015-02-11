@@ -4,6 +4,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.Random;
 
+import org.lwjgl.opengl.Display;
+
 import nfz.game.engine.Game;
 
 /**
@@ -49,7 +51,7 @@ public class Terrain {
 	 */
 	public void render() {
 		//translate rendering based on player position
-		glTranslatef(-translateX, -translateY, 0);
+		glTranslatef(-translateX + Display.getWidth() / 2, -translateY + Display.getHeight() / 2, 0);
 		for (int i = 0; i < ySize; i++) {
 			for (int j = 0; j < xSize; j++) {
 					glPushMatrix();
@@ -61,7 +63,7 @@ public class Terrain {
 			}
 		}
 		//translate back
-		glTranslatef(translateX, translateY, 0);
+		glTranslatef(translateX - Display.getWidth() / 2, translateY - Display.getHeight() / 2, 0);
 	}
 	
 	public void setTranslateX(float x) {
