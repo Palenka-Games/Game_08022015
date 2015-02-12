@@ -12,22 +12,27 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 
+import nfz.game.engine.Delay;
 import nfz.game.engine.Game;
 import nfz.game.graphics.Sprite;
 import nfz.game.logic.GameObject;
 import nfz.game.logic.Stats;
 import nfz.game.physics.Physics;
+import nfz.game.physics.Util;
 
 public class Player extends GameObject {
 	
 	public static final float PLAYER_SX = 64;
 	public static final float PLAYER_SY = 64;
 	public static final String PLAYER_TEX_LOC = "res/player.png";
+	public static final long ATTACK_DELAY = 200;
 	
 	private Stats stats = new Stats();
 	private float xp;
 	private int xpNeeded;
 	private int delta;
+	
+	private Delay attackDelay;
 	
 	/**
 	 * create player instance on coords x.y
@@ -40,6 +45,7 @@ public class Player extends GameObject {
 		sprite = new Sprite(PLAYER_SX, PLAYER_SY, PLAYER_TEX_LOC);
 		hitbox = new Rectangle((int) (x - PLAYER_SX / 2), (int) (y - PLAYER_SY / 2), 
 				(int)PLAYER_SX, (int)PLAYER_SY);
+		attackDelay = new Delay(ATTACK_DELAY);
 		xp=0;
 		xpNeeded=50;
 		stats.setCurrHealth(100);
@@ -53,17 +59,14 @@ public class Player extends GameObject {
 		stats.setIntelligence(5);
 		stats.setSpeed(0.4f);
 	}
-	
-	/**
-	 * Apply player logic
-	 */
+
+	@Override
 	public void update(int delta) {
 		//check collisions
 		this.delta = delta;
+		rot = Util.rotatePlayerToMousePosition(Mouse.getX(), Mouse.getY(), 
+				Display.getWidth() / 2, Display.getHeight() / 2);
 		getInput();
-		rotateToMouseLocation();
-		
-		//System.out.println("Player\tX:" + x + " Y:" + y + " ROT: " + rot);
 	}
 	
 
@@ -72,66 +75,20 @@ public class Player extends GameObject {
 		System.out.println("Player collision!!");
 	}
 	
-	public void rotateToMouseLocation() {
-		//rotate with mouse
-		//get mouse coords
-		float mouseX = Mouse.getX();
-		float mouseY = Mouse.getY();
-			
-		//get player center coords
-		float centerX = Display.getWidth() / 2;
-		float centerY = Display.getHeight() / 2;
-				
-		//get delta values
-		float deltaY = mouseY - centerY;
-		float deltaX = mouseX - centerX;
-		
-		//calculate angle between player and mouse using arc tang
-		float angle = (float) Math.atan(deltaY / deltaX);
-		
-		//get quadrant I, II, III, or IV
-		if (deltaY >= 0 && deltaX >= 0) {
-			rot = (float) Math.toDegrees(angle);
-		} else if (deltaY >= 0 && deltaX < 0) {
-			rot = 180 + (float) Math.toDegrees(angle);
-		} else if (deltaY < 0 && deltaX < 0) {
-			rot = 180 + (float) Math.toDegrees(angle);
-		} else if (deltaY < 0 && deltaX >= 0) {
-			rot = 360 + (float) Math.toDegrees(angle);
-		}
-		
-		rot -= 90;
-	}
 	
 	public void getInput() {
-		
-		//get mouse coords
-		float mouseX = Mouse.getX();
-		float mouseY = Mouse.getY();
-			
-		//get player center coords
-		float centerX = Display.getWidth() / 2;
-		float centerY = Display.getHeight() / 2;
-				
-		//get delta values
-		float deltaY = mouseY - centerY;
-		float deltaX = mouseX - centerX;
-		
-		//calculate angle between player and mouse using arc tang
-		float angle = (float) Math.atan2(deltaY, deltaX);
-		
 		//check for keys pressed
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			move(angle);
+			move(rot + 90);
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			move((float) (angle+Math.toRadians(180)));
+			move(rot + 90 + 180);
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			move((float) (angle+Math.toRadians(90)));
+			move(rot + 90 + 90);
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			move((float) (angle-Math.toRadians(90)));
+			move(rot);
 		}
 		//check mouse input
 		if (Mouse.isButtonDown(0)) {
@@ -159,6 +116,10 @@ public class Player extends GameObject {
 	 * Logic of player attack
 	 */
 	public void attack() {
+		//check if attack is possible
+		if (!attackDelay.isReady()) {
+			return;
+		}
 		//get spawn position of projectile
 		float pX = (float) (x + 64 * Math.cos(Math.toRadians(rot + 90))); 
 		float pY = (float) (y + 64 * Math.sin(Math.toRadians(rot + 90))); 
@@ -172,8 +133,8 @@ public class Player extends GameObject {
 		if( (Keyboard.isKeyDown(Keyboard.KEY_W) && ( Keyboard.isKeyDown(Keyboard.KEY_A) || Keyboard.isKeyDown(Keyboard.KEY_D))) ||
 		    (Keyboard.isKeyDown(Keyboard.KEY_S) && ( Keyboard.isKeyDown(Keyboard.KEY_A) || Keyboard.isKeyDown(Keyboard.KEY_D))))
 					speed = (float) (speed / Math.sqrt(2));
-		float newX = (float) (x + speed * Math.cos(angle) * delta);
-		float newY = (float) (y + speed * Math.sin(angle) * delta);
+		float newX = (float) (x + speed * Math.cos(Math.toRadians(angle)) * delta);
+		float newY = (float) (y + speed * Math.sin(Math.toRadians(angle)) * delta);
 		Rectangle newHitbox = new Rectangle((int) (newX - PLAYER_SX / 2), (int) (newY - PLAYER_SY / 2),
 				(int)PLAYER_SX, (int)PLAYER_SY);
 		//check collisions

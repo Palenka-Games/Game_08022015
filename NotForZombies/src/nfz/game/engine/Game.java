@@ -34,7 +34,7 @@ public class Game {
 		objectsToAdd = new ArrayList<GameObject>();
 		objectsToRemove = new ArrayList<GameObject>();
 		
-		terrain = new Terrain(20, 20);
+		terrain = new Terrain(10, 10);
 		
 		//create player at starting position
 		player = new Player(startX, startY);
@@ -62,7 +62,6 @@ public class Game {
 		objects.removeAll(objectsToRemove);
 		objectsToRemove.clear();
 
-		
 		//update translation based on player position
 		trX = player.getX();
 		trY = player.getY();

@@ -12,7 +12,7 @@ public class Time {
 	 * Get the time in miliseconds
 	 * @return
 	 */
-	public long getTime() {
+	public static long getTime() {
 		return (System.nanoTime() / 1000000);
 	}
 	
