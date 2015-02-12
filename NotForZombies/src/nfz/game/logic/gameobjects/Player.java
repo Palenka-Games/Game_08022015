@@ -18,7 +18,7 @@ import nfz.game.logic.GameObject;
 import nfz.game.logic.Stats;
 import nfz.game.physics.Physics;
 
-public class Player extends GameObject{
+public class Player extends GameObject {
 	
 	public static final float PLAYER_SX = 64;
 	public static final float PLAYER_SY = 64;
@@ -63,25 +63,13 @@ public class Player extends GameObject{
 		getInput();
 		rotateToMouseLocation();
 		
-		System.out.println("Player\tX:" + x + " Y:" + y + " ROT: " + rot);
+		//System.out.println("Player\tX:" + x + " Y:" + y + " ROT: " + rot);
 	}
 	
 
 	@Override
 	public void collideWith(GameObject other) {
-		
-		if (other instanceof Obstacle) {
-			System.out.println("Collision with obstacle!");
-		}
-		
-	}
-	
-	/**
-	 * Update hitbox positions based on position
-	 */
-	private void updateHitbox() {
-		hitbox.setBounds((int) (x - PLAYER_SX / 2), (int) (y - PLAYER_SY / 2), 
-				(int)PLAYER_SX, (int)PLAYER_SY);
+		System.out.println("Player collision!!");
 	}
 	
 	public void rotateToMouseLocation() {
@@ -145,6 +133,10 @@ public class Player extends GameObject{
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
 			move((float) (angle-Math.toRadians(90)));
 		}
+		//check mouse input
+		if (Mouse.isButtonDown(0)) {
+			attack();
+		}
 	}
 	
 	/**
@@ -163,6 +155,17 @@ public class Player extends GameObject{
 		glPopMatrix();
 	}
 	
+	/**
+	 * Logic of player attack
+	 */
+	public void attack() {
+		//get spawn position of projectile
+		float pX = (float) (x + 64 * Math.cos(Math.toRadians(rot + 90))); 
+		float pY = (float) (y + 64 * Math.sin(Math.toRadians(rot + 90))); 
+		Projectile bullet = new Projectile(pX, pY, rot);
+		Game.objectsToAdd.add(bullet);
+	}
+	
 	private void move(float angle) {
 		float speed = stats.getSpeed();
 		//diagonal movement
@@ -179,20 +182,19 @@ public class Player extends GameObject{
 			if (!(go instanceof Player)) {
 				//compare hitboxes
 				if (Physics.checkCollision(newHitbox, go.getHitbox())) {
-					System.out.println("r1 " + newHitbox + "\nr2 " + go.getHitbox());
 					collide = true;
+					//notify colliding objects
 					go.collideWith(this);
 					this.collideWith(go);
 				}
 			}
 		}
-		//move if collision not detected
+		//move if collision not detected and update hitbox
 		if (!collide) {
 			x = newX;
 			y = newY;
+			updateHitbox(newHitbox);
 		}
-		
-		
 	}
 	
 	public void addXP(float amt) {

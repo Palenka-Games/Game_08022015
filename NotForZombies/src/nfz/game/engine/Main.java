@@ -11,15 +11,15 @@ import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Starts the game
- * @author Jani_NTB
+ * @author BBPG
  *
  */
 public class Main {
 	
 	//screen details
 	private static final String GAME_TITLE = "NotForZombies";
-	private static final int SCREEN_WIDTH = 800;
-	private static final int SCREEN_HEIGHT = 600;
+	private static final int SCREEN_WIDTH = 1024;
+	private static final int SCREEN_HEIGHT = 768;
 	
 	private static Game game;
 	private Time time;

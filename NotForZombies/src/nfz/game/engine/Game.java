@@ -7,6 +7,7 @@ import org.lwjgl.opengl.Display;
 import nfz.game.logic.GameObject;
 import nfz.game.logic.gameobjects.Obstacle;
 import nfz.game.logic.gameobjects.Player;
+import nfz.game.logic.gameobjects.Projectile;
 import nfz.game.logic.terrain.Terrain;
 
 /**
@@ -18,6 +19,8 @@ import nfz.game.logic.terrain.Terrain;
 public class Game {
 
 	public static ArrayList<GameObject> objects;
+	public static ArrayList<GameObject> objectsToAdd;
+	public static ArrayList<GameObject> objectsToRemove;
 	private Player player;
 	private Terrain terrain;
 	
@@ -28,6 +31,8 @@ public class Game {
 	
 	public Game() {		
 		objects = new ArrayList<GameObject>();
+		objectsToAdd = new ArrayList<GameObject>();
+		objectsToRemove = new ArrayList<GameObject>();
 		
 		terrain = new Terrain(20, 20);
 		
@@ -45,9 +50,19 @@ public class Game {
 	}
 	
 	public void update(int delta) {
+		//update all gameobjects
 		for (GameObject go : objects) {
 			go.update(delta);
 		}
+		//add new gameobjects
+		objects.addAll(objectsToAdd);
+		objectsToAdd.clear();
+		
+		//remove objects
+		objects.removeAll(objectsToRemove);
+		objectsToRemove.clear();
+
+		
 		//update translation based on player position
 		trX = player.getX();
 		trY = player.getY();

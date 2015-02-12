@@ -25,8 +25,6 @@ public class Obstacle extends GameObject {
 
 	@Override
 	public void collideWith(GameObject other) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

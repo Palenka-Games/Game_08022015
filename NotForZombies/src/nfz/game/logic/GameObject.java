@@ -46,15 +46,35 @@ public abstract class GameObject {
 		
 		if (sprite != null) {
 			glPushMatrix();
+			//translate based on current game translation
 			glTranslatef(Display.getWidth() / 2 - Game.trX, 
 					Display.getHeight() / 2 - Game.trY, 0);
-			glTranslatef(x - sprite.getSx() /2, y - sprite.getSy() / 2, 0);
+			//translate to gameobject position
+			glTranslatef(x, y, 0);
+			//apply rotation
+			glRotatef(rot, 0f, 0f, 1f);
+			//translate to bottom left corner for texture rendering
+			glTranslatef(-sprite.getSx() / 2, -sprite.getSy() / 2, 0);
 			sprite.render();
 		glPopMatrix();
 		}
 		
 	}
  
+	/**
+	 * Destroy this game object
+	 */
+	public void destroy() {
+		Game.objectsToRemove.add(this);
+	}
+	
+	/**
+	 * Update hitbox based on position
+	 */
+	public void updateHitbox(Rectangle r) {
+		hitbox.setBounds(r);
+	}
+	
 	public float getX() {
 		return x;
 	}
