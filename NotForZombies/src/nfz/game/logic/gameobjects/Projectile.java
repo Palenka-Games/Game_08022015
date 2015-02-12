@@ -9,8 +9,8 @@ import nfz.game.physics.Physics;
 
 public class Projectile extends GameObject {
 
-	public static final float SX = 16;
-	public static final float SY = 16;
+	public static final float SX = 24;
+	public static final float SY = 24;
 	public static final String TEX_LOC = "res/bullet.png";
 	public static final float SPEED = 1f;
 	
