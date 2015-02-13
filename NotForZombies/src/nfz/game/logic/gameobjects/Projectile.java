@@ -1,5 +1,6 @@
 package nfz.game.logic.gameobjects;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 
 import nfz.game.engine.Game;
@@ -12,7 +13,10 @@ public class Projectile extends GameObject {
 	public static final float SX = 24;
 	public static final float SY = 24;
 	public static final String TEX_LOC = "res/bullet.png";
-	public static final float SPEED = 1f;
+	public static final float SPEED = 0.5f;
+	public static final float MAX_DISTANCE = 450;
+	
+	private float distanceTraveled;
 	
 	public Projectile(float x, float y, float rot) {
 		super(x, y, SX, SY);
@@ -21,12 +25,19 @@ public class Projectile extends GameObject {
 		sprite = new Sprite(SX, SY, TEX_LOC);
 		hitbox = new Rectangle((int) (x - SX / 2), (int) (y - SY / 2), 
 				(int) SX, (int) SY);
+		distanceTraveled = 0;
 	}
 	
 	@Override
 	public void update(int delta) {
 		float newX = (float) (x + SPEED * Math.cos(Math.toRadians(rot + 90)) * delta);
 		float newY = (float) (y + SPEED * Math.sin(Math.toRadians(rot + 90)) * delta);
+		
+		distanceTraveled += Point.distance(x, y, newX, newY);
+		if (distanceTraveled >= MAX_DISTANCE) {
+			destroy();
+			return;
+		}
 		
 		Rectangle newHitbox = new Rectangle((int) (newX - SX / 2), (int) (newY - SY / 2), 
 				(int) SX, (int) SY);
