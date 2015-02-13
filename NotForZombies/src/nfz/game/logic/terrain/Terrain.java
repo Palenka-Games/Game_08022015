@@ -15,6 +15,10 @@ import nfz.game.engine.Game;
  */
 public class Terrain {
 	
+	//how many we will render around player
+	public static final int WIDTH_BLOCKS = 16;
+	public static final int HEIGHT_BLOCKS = 12;
+	
 	//size of terrain
 	private int xSize;
 	private int ySize;
@@ -49,11 +53,37 @@ public class Terrain {
 	/**
 	 * Render all blocks in terrain
 	 */
-	public void render() {
+	public void render(int x, int y) {
+		
+		//index of blocks the player is standing on
+		int playerI = (int) (y / Block.BLOCK_SIZE);
+		int playerJ = (int) (x / Block.BLOCK_SIZE);
+		
+		//get starting indexes of terrain rendering
+		int startI = playerI - (HEIGHT_BLOCKS / 2);
+		int startJ = playerJ - (WIDTH_BLOCKS / 2);
+		int endI = playerI + (HEIGHT_BLOCKS / 2);;
+		int endJ = playerJ + (WIDTH_BLOCKS / 2);
+		
+		//check array bounds
+		if (startI < 0) {
+			startI = 0;
+		}
+		if (startJ < 0) {
+			startJ = 0;
+		}
+		if (endI > ySize) {
+			endI = ySize;
+		}
+		if (endJ > xSize) {
+			endJ = xSize;
+		}
+		
+		//System.out.println("X:" + x + " Y:" + y + "\niX:" + startI + " iY:" + startJ);
 		//translate rendering based on player position
 		glTranslatef(-translateX + Display.getWidth() / 2, -translateY + Display.getHeight() / 2, 0);
-		for (int i = 0; i < ySize; i++) {
-			for (int j = 0; j < xSize; j++) {
+		for (int i = startI; i < endI; i++) {
+			for (int j = startJ; j < endJ; j++) {
 					glPushMatrix();
 					//translate to the position of the rendered block
 					//and call render method on that block

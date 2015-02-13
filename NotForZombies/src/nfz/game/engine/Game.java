@@ -24,8 +24,8 @@ public class Game {
 	private Player player;
 	private Terrain terrain;
 	
-	private float startX = 256;
-	private float startY = 256;
+	private float startX = 0;
+	private float startY = 0;
 	
 	public static float trX, trY;
 	
@@ -34,7 +34,7 @@ public class Game {
 		objectsToAdd = new ArrayList<GameObject>();
 		objectsToRemove = new ArrayList<GameObject>();
 		
-		terrain = new Terrain(10, 10);
+		terrain = new Terrain(20, 20);
 		
 		//create player at starting position
 		player = new Player(startX, startY);
@@ -71,7 +71,7 @@ public class Game {
 	
 	public void render() {
 		//render terrain
-		terrain.render();
+		terrain.render((int)player.getX(), (int)player.getY());
 		
 		//render gameobjects
 		for (GameObject go : objects) {
