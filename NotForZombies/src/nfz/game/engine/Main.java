@@ -18,8 +18,8 @@ public class Main {
 	
 	//screen details
 	private static final String GAME_TITLE = "NotForZombies";
-	private static final int SCREEN_WIDTH = 1024;
-	private static final int SCREEN_HEIGHT = 768;
+	private static final int SCREEN_WIDTH = 1000;
+	private static final int SCREEN_HEIGHT = 600;
 	
 	private static Game game;
 	private Time time;
