@@ -45,10 +45,6 @@ public class Game {
 		objects.add(new Obstacle(500, 480));
 	}
 	
-	public void getInput() {
-		//player.getInput();
-	}
-	
 	public void update(int delta) {
 		//update all gameobjects
 		for (GameObject go : objects) {
@@ -77,6 +73,11 @@ public class Game {
 		for (GameObject go : objects) {
 			go.render();
 		}
+	}
+
+	public void getInput() {
+		//
+		
 	}
 	
 }
