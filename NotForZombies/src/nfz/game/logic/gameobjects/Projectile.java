@@ -6,7 +6,6 @@ import java.awt.Rectangle;
 import nfz.game.engine.Game;
 import nfz.game.graphics.Sprite;
 import nfz.game.logic.GameObject;
-import nfz.game.physics.Circle;
 import nfz.game.physics.Physics;
 
 public class Projectile extends GameObject {
@@ -24,7 +23,8 @@ public class Projectile extends GameObject {
 		this.rot = rot;
 		isSolid = true;
 		sprite = new Sprite(SX, SY, TEX_LOC);
-		hitbox = new Circle(x, y, SX/2);
+		hitbox = new Rectangle((int) (x - SX / 2), (int) (y - SY / 2), 
+				(int) SX, (int) SY);
 		distanceTraveled = 0;
 	}
 	
@@ -40,7 +40,8 @@ public class Projectile extends GameObject {
 			return;
 		}
 		
-		Circle newHitbox = new Circle(newX, newY, SX/2);
+		Rectangle newHitbox = new Rectangle((int) (newX - SX / 2), (int) (newY - SY / 2), 
+				(int) SX, (int) SY);
 		
 		//check collision
 		boolean collide = false;

@@ -1,6 +1,7 @@
 package nfz.game.physics;
 
 import java.awt.Rectangle;
+
 import nfz.game.logic.GameObject;
 
 public class Physics {
@@ -29,16 +30,6 @@ public class Physics {
 	 */
 	public static boolean checkCollision(Rectangle r1, Rectangle r2) {
 		return r1.intersects(r2);
-	}
-	
-	/**
-	 * Check if two circles collide
-	 * @param r1
-	 * @param r2
-	 * @return
-	 */
-	public static boolean checkCollision(Circle c1, Circle c2) {
-		return c1.intersects(c2);
 	}
 	
 }

@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 
 import nfz.game.graphics.Sprite;
 import nfz.game.logic.GameObject;
-import nfz.game.physics.Circle;
 
 public class Obstacle extends GameObject {
 
@@ -16,7 +15,8 @@ public class Obstacle extends GameObject {
 		super(x,y, SX, SY);
 		isSolid = true;
 		sprite = new Sprite(SX, SY, TEX_LOC);
-		hitbox = new Circle(x, y, SX/2);
+		hitbox = new Rectangle((int) (x - SX / 2), (int) (y - SY / 2), 
+				(int) SX, (int) SY);
 	}
 	
 	@Override

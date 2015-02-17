@@ -12,16 +12,11 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 
-import nfz.game.components.InputComponent;
-import nfz.game.components.RenderComponent;
-import nfz.game.components.implement.PlayerInputComponent;
-import nfz.game.components.implement.PlayerRenderComponent;
 import nfz.game.engine.Delay;
 import nfz.game.engine.Game;
 import nfz.game.graphics.Sprite;
 import nfz.game.logic.GameObject;
 import nfz.game.logic.Stats;
-import nfz.game.physics.Circle;
 import nfz.game.physics.Physics;
 import nfz.game.physics.Util;
 
@@ -37,10 +32,6 @@ public class Player extends GameObject {
 	private int xpNeeded;
 	private int delta;
 	
-	//components
-	InputComponent input;
-	RenderComponent render;
-	
 	private Delay attackDelay;
 	
 	/**
@@ -52,10 +43,9 @@ public class Player extends GameObject {
 		super(x, y, PLAYER_SX, PLAYER_SY);
 		isSolid = true;
 		sprite = new Sprite(PLAYER_SX, PLAYER_SY, PLAYER_TEX_LOC);
-		hitbox = new Circle(this.x,this.y,PLAYER_SX/2);
+		hitbox = new Rectangle((int) (x - PLAYER_SX / 2), (int) (y - PLAYER_SY / 2), 
+				(int)PLAYER_SX, (int)PLAYER_SY);
 		attackDelay = new Delay(ATTACK_DELAY);
-		input = new PlayerInputComponent(this);
-		render = new PlayerRenderComponent(this);
 		xp=0;
 		xpNeeded=50;
 		stats.setCurrHealth(100);
@@ -76,14 +66,50 @@ public class Player extends GameObject {
 		this.delta = delta;
 		rot = Util.rotatePlayerToMousePosition(Mouse.getX(), Mouse.getY(), 
 				Display.getWidth() / 2, Display.getHeight() / 2);
-		input.update();
-		render.update();
+		getInput();
 	}
 	
 
 	@Override
 	public void collideWith(GameObject other) {
 		System.out.println("Player collision!!");
+	}
+	
+	
+	public void getInput() {
+		//check for keys pressed
+		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+			move(rot + 90);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+			move(rot + 90 + 180);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+			move(rot + 90 + 90);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+			move(rot);
+		}
+		//check mouse input
+		if (Mouse.isButtonDown(0)) {
+			attack();
+		}
+	}
+	
+	/**
+	 * Renders player in the center of the screen
+	 */
+	public void render() {
+		glPushMatrix();
+		//translate to the center of the screen
+		glTranslatef(Display.getWidth() / 2 - Player.PLAYER_SX / 2, 
+				Display.getHeight() / 2 - Player.PLAYER_SY / 2, 0);
+		//translate to the center of player to apply rotation
+		glTranslatef(sprite.getSx() / 2, sprite.getSy() / 2, 0);
+		glRotatef(rot, 0.0f, 0.0f, 1.0f);	
+		glTranslatef(-(sprite.getSx() / 2), -(sprite.getSy() / 2), 0);
+		sprite.render();
+		glPopMatrix();
 	}
 	
 	/**
@@ -101,7 +127,7 @@ public class Player extends GameObject {
 		Game.objectsToAdd.add(bullet);
 	}
 	
-	public void move(float angle) {
+	private void move(float angle) {
 		float speed = stats.getSpeed();
 		//diagonal movement
 		if( (Keyboard.isKeyDown(Keyboard.KEY_W) && ( Keyboard.isKeyDown(Keyboard.KEY_A) || Keyboard.isKeyDown(Keyboard.KEY_D))) ||
@@ -109,7 +135,8 @@ public class Player extends GameObject {
 					speed = (float) (speed / Math.sqrt(2));
 		float newX = (float) (x + speed * Math.cos(Math.toRadians(angle)) * delta);
 		float newY = (float) (y + speed * Math.sin(Math.toRadians(angle)) * delta);
-		Circle newHitbox = new Circle(newX,newY,PLAYER_SX/2);
+		Rectangle newHitbox = new Rectangle((int) (newX - PLAYER_SX / 2), (int) (newY - PLAYER_SY / 2),
+				(int)PLAYER_SX, (int)PLAYER_SY);
 		//check collisions
 		boolean collide = false;
 		for (GameObject go : Game.objects) {
