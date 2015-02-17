@@ -32,4 +32,15 @@ public class Physics {
 		return r1.intersects(r2);
 	}
 	
+	/**
+	 * Check if two circles collide
+	 * @param r1
+	 * @param r2
+	 * @return
+	 */
+	public static boolean checkCollision(Circle c1, Circle c2) {
+		return c1.intersects(c2);
+	}
+	
+	
 }

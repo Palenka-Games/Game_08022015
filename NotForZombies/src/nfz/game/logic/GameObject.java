@@ -1,11 +1,10 @@
 package nfz.game.logic;
 
-import java.awt.Rectangle;
-
 import org.lwjgl.opengl.Display;
 
 import nfz.game.engine.Game;
 import nfz.game.graphics.Sprite;
+import nfz.game.physics.Circle;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -24,7 +23,7 @@ public abstract class GameObject {
 	protected float rot;
 
 	protected Sprite sprite;
-	protected Rectangle hitbox;
+	protected Circle hitbox;
 	
 	public GameObject(float x, float y, float sx, float sy) {
 		this.x = x;
@@ -71,8 +70,8 @@ public abstract class GameObject {
 	/**
 	 * Update hitbox based on position
 	 */
-	public void updateHitbox(Rectangle r) {
-		hitbox.setBounds(r);
+	public void updateHitbox(Circle newHitbox) {
+		hitbox.setCenter(newHitbox.getX(),newHitbox.getY());
 	}
 	
 	public float getX() {
@@ -104,7 +103,7 @@ public abstract class GameObject {
 	public boolean getIsSolid() {
 		return isSolid;
 	}
-	public Rectangle getHitbox() {
+	public Circle getHitbox() {
 		return hitbox;
 	}
 

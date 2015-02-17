@@ -5,18 +5,15 @@ import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 
-import java.awt.Rectangle;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Vector2f;
-
 import nfz.game.engine.Delay;
 import nfz.game.engine.Game;
 import nfz.game.graphics.Sprite;
 import nfz.game.logic.GameObject;
 import nfz.game.logic.Stats;
+import nfz.game.physics.Circle;
 import nfz.game.physics.Physics;
 import nfz.game.physics.Util;
 
@@ -43,8 +40,7 @@ public class Player extends GameObject {
 		super(x, y, PLAYER_SX, PLAYER_SY);
 		isSolid = true;
 		sprite = new Sprite(PLAYER_SX, PLAYER_SY, PLAYER_TEX_LOC);
-		hitbox = new Rectangle((int) (x - PLAYER_SX / 2), (int) (y - PLAYER_SY / 2), 
-				(int)PLAYER_SX, (int)PLAYER_SY);
+		hitbox = new Circle(x,y,PLAYER_SX/2);
 		attackDelay = new Delay(ATTACK_DELAY);
 		xp=0;
 		xpNeeded=50;
@@ -135,8 +131,7 @@ public class Player extends GameObject {
 					speed = (float) (speed / Math.sqrt(2));
 		float newX = (float) (x + speed * Math.cos(Math.toRadians(angle)) * delta);
 		float newY = (float) (y + speed * Math.sin(Math.toRadians(angle)) * delta);
-		Rectangle newHitbox = new Rectangle((int) (newX - PLAYER_SX / 2), (int) (newY - PLAYER_SY / 2),
-				(int)PLAYER_SX, (int)PLAYER_SY);
+		Circle newHitbox = new Circle(newX,newY,PLAYER_SX/2);
 		//check collisions
 		boolean collide = false;
 		for (GameObject go : Game.objects) {
