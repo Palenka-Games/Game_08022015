@@ -83,15 +83,10 @@ public class Main {
 		time.lastFPS = time.getTime(); // call before loop to init fps timer
 		
 		while(!Display.isCloseRequested()) {
-			getInput();
 			update();
 			time.updateFPS();
 			render();
 		}
-	}
-	
-	private void getInput() {
-		game.getInput();
 	}
 	
 	private void update() {
