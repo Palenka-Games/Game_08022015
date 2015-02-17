@@ -74,5 +74,10 @@ public class Game {
 			go.render();
 		}
 	}
+
+	public void getInput() {
+		//
+		
+	}
 	
 }
