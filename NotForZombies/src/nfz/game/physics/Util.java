@@ -16,7 +16,7 @@ public class Util {
 	 * @param py
 	 * @return
 	 */
-	public static float rotatePlayerToMousePosition(float mx, float my, float px, float py) {
+	public static float rotateToPoint(float mx, float my, float px, float py) {
 		float rot = 0;
 		
 		//get delta values

@@ -27,9 +27,11 @@ public class Player extends GameObject {
 	private Stats stats = new Stats();
 	private float xp;
 	private int xpNeeded;
+
 	private int delta;
 	
 	private Delay attackDelay;
+	private Delay logDelay;
 	
 	/**
 	 * create player instance on coords x.y
@@ -42,6 +44,7 @@ public class Player extends GameObject {
 		sprite = new Sprite(PLAYER_SX, PLAYER_SY, PLAYER_TEX_LOC);
 		hitbox = new Circle(x,y,PLAYER_SX/2);
 		attackDelay = new Delay(ATTACK_DELAY);
+		logDelay = new Delay(2009);
 		xp=0;
 		xpNeeded=50;
 		stats.setCurrHealth(100);
@@ -58,9 +61,16 @@ public class Player extends GameObject {
 
 	@Override
 	public void update(int delta) {
-		//check collisions
+		if (logDelay.isReady())
+			System.out.println("PLAYER HP: " + stats.getCurrHealth());
+		if (stats.getCurrHealth() <= 0) {
+			System.out.println("ZOMREL SI TY KOKOT LAMA");
+			stats.setCurrHealth(stats.getMaxHealth());
+			x=y=0;
+		}
+		
 		this.delta = delta;
-		rot = Util.rotatePlayerToMousePosition(Mouse.getX(), Mouse.getY(), 
+		rot = Util.rotateToPoint(Mouse.getX(), Mouse.getY(), 
 				Display.getWidth() / 2, Display.getHeight() / 2);
 		getInput();
 	}
@@ -68,7 +78,6 @@ public class Player extends GameObject {
 
 	@Override
 	public void collideWith(GameObject other) {
-		System.out.println("Player collision!!");
 	}
 	
 	
@@ -135,7 +144,7 @@ public class Player extends GameObject {
 		//check collisions
 		boolean collide = false;
 		for (GameObject go : Game.objects) {
-			if (!(go instanceof Player)) {
+			if (!go.equals(this)) {
 				//compare hitboxes
 				if (Physics.checkCollision(newHitbox, go.getHitbox())) {
 					collide = true;
@@ -156,18 +165,32 @@ public class Player extends GameObject {
 	public void addXP(float amt) {
 		this.xp += amt;
 		if(xp>=xpNeeded){
-			levelUP();
 			xp-=xpNeeded;
+			levelUP();
 		}
 	}
 	
 	private void levelUP() {
-		stats.setLevel(stats.getLevel()+1);
+		stats.setLevel(stats.getLevel() + 1);
 		xpNeeded *= 2; 
+		stats.setMaxHealth(stats.getMaxHealth() + 29);
+		System.out.println("LEVEL UP MADAFAKAAA\nLevel: " + stats.getLevel());
 	}
 
 	public float getXp() {
 		return xp;
+	}
+	
+	public Stats getStats() {
+		return stats;
+	}
+	
+	public int getXpNeeded() {
+		return xpNeeded;
+	}
+
+	public void setXpNeeded(int xpNeeded) {
+		this.xpNeeded = xpNeeded;
 	}
 
 }

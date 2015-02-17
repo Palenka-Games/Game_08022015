@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.Display;
 
 import nfz.game.logic.GameObject;
+import nfz.game.logic.gameobjects.Enemy;
+import nfz.game.logic.gameobjects.MeleeEnemy;
 import nfz.game.logic.gameobjects.Obstacle;
 import nfz.game.logic.gameobjects.Player;
 import nfz.game.logic.gameobjects.Projectile;
@@ -43,6 +45,8 @@ public class Game {
 		objects.add(new Obstacle(350, 64));
 		objects.add(new Obstacle(98, 500));
 		objects.add(new Obstacle(500, 480));
+		objects.add(new MeleeEnemy(600, 600, player));
+		objects.add(new MeleeEnemy(250, 700, player));
 	}
 	
 	public void getInput() {

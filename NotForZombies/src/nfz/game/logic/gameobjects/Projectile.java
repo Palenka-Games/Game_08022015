@@ -63,10 +63,7 @@ public class Projectile extends GameObject {
 
 	@Override
 	public void collideWith(GameObject other) {
-		if (other instanceof Obstacle) {
-			System.out.println("Cant shoot through a rock, gonna explode");
 			destroy();
-		}
 	}
-	
 }
+
