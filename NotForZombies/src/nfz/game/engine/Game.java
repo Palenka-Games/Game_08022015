@@ -41,12 +41,7 @@ public class Game {
 		//create player at starting position
 		player = new Player(startX, startY);
 		objects.add(player);
-		objects.add(new Obstacle(128, 128));
-		objects.add(new Obstacle(350, 64));
-		objects.add(new Obstacle(98, 500));
-		objects.add(new Obstacle(500, 480));
 		objects.add(new MeleeEnemy(600, 600, player));
-		objects.add(new MeleeEnemy(250, 700, player));
 	}
 	
 	public void getInput() {
